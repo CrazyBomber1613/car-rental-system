@@ -1,7 +1,10 @@
+import java.util.Scanner;
+
 public class Sedan extends AbstractCar{
     double weeklyRate;
     double dailyRate;
     boolean rented = false;
+    Scanner input = new Scanner(System.in);
 
     Sedan(String make , String model , int year , double weeklyRate , double dailyRate){
         super.make = make;
@@ -32,11 +35,35 @@ public class Sedan extends AbstractCar{
     @Override
     public void rent() {
         if (!rented) {
+            System.out.print("How are you going to rent the car? (weekly / daily): ");
+            String rentalType = input.nextLine();
+            if (!rentalType.equalsIgnoreCase("weekly") && !rentalType.equalsIgnoreCase("daily")) {
+                System.out.println("Invalid rental type. Exiting...");
+                return;
+            }
+            int amount = 0;
+            boolean validInput = false;
+            while (!validInput) {
+                System.out.print("Enter the number of " + rentalType + "s: ");
+                try {
+                    amount = Integer.parseInt(input.nextLine());
+                    if (amount <= 0) {
+                        System.out.println("Please enter a positive number.");
+                    } else {
+                        validInput = true;
+                    }
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid number. Please try again.");
+                }
+            }
+
+            double cost = calculateRentalCost(rentalType, amount);
+            System.out.println("The rental cost is: " + cost);
             rented = true;
-            System.out.println("car rented successfully!");
+            System.out.println("Car rented successfully!");
+        } else {
+            System.out.println("Car already rented!");
         }
-        else
-            System.out.println("car already rented!");
     }
     @Override
     public void returnCar() {
